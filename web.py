@@ -162,7 +162,7 @@ def start():
                 ftp = ssh.open_sftp()
                 ftp.get(remotefile, localfile)
                 ftp.close()
-        except Exception, e:
+        except Exception as e:
                 raise Exception("scp {}@{}:{} {} -> {}".format(sshuser, remotehost, remotefile, localfile, e))
 
         stream = open(localfile, "r")
@@ -170,10 +170,11 @@ def start():
         session['yml'] = convert_keys_to_string(yaml.load(stream))
 
     elif md5hash:
+        # Read YAML file
+        with open("basket/" + md5hash, "r") as stream:
+            data_loaded = yaml.safe_load(stream)
 
-        stream = open("basket/" + md5hash, "r")
-
-        session['yml'] = convert_keys_to_string(yaml.load(stream))
+        session['yml'] = convert_keys_to_string(data_loaded)
 
     else:
         raise Exception("hey dude, do you really know what you are doing here? :-)")
@@ -321,7 +322,7 @@ def download():
 
         try:
                 stream = open("basket/" + md5hash, "r")
-        except Exception, e:
+        except Exception as e:
                 return "no such hash" , 200
 
         return stream.read() , 200, {'Content-Type': 'text/plain; charset=utf-8'}
@@ -369,5 +370,5 @@ if __name__ == '__main__':
         debug = True,
         host="0.0.0.0",
         port=int("8421"),
-        processes=5
+        processes=1
     )

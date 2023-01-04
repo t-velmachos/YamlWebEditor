@@ -1,14 +1,16 @@
-FROM alpine:3.3
+FROM alpine:3.16.2
 
-RUN apk add --no-cache python gcc python-dev libffi-dev openssl-dev musl-dev && \
-    python -m ensurepip && \
+
+# Install python/pip
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && \
+    ln -sf python3 /usr/bin/python && \
+    python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
-    pip install --upgrade pip setuptools && \
-    rm -r /root/.cache 
+    pip3 install --no-cache --upgrade pip setuptools
 
 COPY . /app
 WORKDIR /app
-RUN pip install -r requirements.txt
-RUN apk del gcc python-dev libffi-dev openssl-dev musl-dev
+RUN pip3 install -r requirements.txt
 EXPOSE 8421
 CMD ["/usr/bin/python", "web.py"]
