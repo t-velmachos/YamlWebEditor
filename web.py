@@ -16,7 +16,7 @@ import hashlib
 import time
 import sys
 import copy
-
+from functools import reduce
 
 def getFromDict(dataDict, mapList):
     return reduce(lambda d, k: d[k], mapList, dataDict)
