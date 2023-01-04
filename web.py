@@ -167,9 +167,10 @@ def start():
 
         stream = open(localfile, "r")
 
-        session['yml'] = convert_keys_to_string(yaml.load(stream))
+        session['yml'] = convert_keys_to_string(yaml.safe_load(stream))
 
     elif md5hash:
+
         # Read YAML file
         with open("basket/" + md5hash, "r") as stream:
             data_loaded = yaml.safe_load(stream)
@@ -218,7 +219,7 @@ def start():
     return render_template('editor.html',
                            FIELDS=Markup(g.Fields),
                            TOTAL_LINES=g.Total_Lines,
-                           JSONYML=yaml.dump(convert_keys_to_string(yaml.load(yaml.dump(g.dictionary))), default_flow_style=False))
+                           JSONYML=yaml.dump(convert_keys_to_string(yaml.safe_load(yaml.dump(g.dictionary))), default_flow_style=False))
 
 
 @app.route('/edit', methods=['GET', 'POST'])
@@ -301,7 +302,7 @@ def edit():
     return render_template('editor.html',
                            FIELDS=Markup(g.Fields),
                            TOTAL_LINES=g.Total_Lines,
-                           JSONYML=yaml.dump(convert_keys_to_string(yaml.load(yaml.dump(g.dictionary))), default_flow_style=False))
+                           JSONYML=yaml.dump(convert_keys_to_string(yaml.safe_load(yaml.dump(g.dictionary))), default_flow_style=False))
 
 
 @app.route('/clear')
@@ -345,7 +346,7 @@ def update():
         if value != "sbrubles":
             setInDict(session['yml'], key, value)
 
-    yml = yaml.dump(convert_keys_to_string(yaml.load(yaml.dump(session['yml']))), default_flow_style=False)
+    yml = yaml.dump(convert_keys_to_string(yaml.safe_load(yaml.dump(session['yml']))), default_flow_style=False)
 
     g.dictionary = copy.deepcopy(convert_keys_to_string(session['yml']))
 
